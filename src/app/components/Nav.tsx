@@ -3,7 +3,7 @@ import React from "react";
 
 const Nav = () => {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-sky-900 backdrop-blur-md border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-blue-950 backdrop-blur-md border-b border-gray-800">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Image
