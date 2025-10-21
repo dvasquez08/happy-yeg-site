@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, MapPin, Clock } from "lucide-react";
+import { ChevronDown, MapPin, Clock, Sparkles } from "lucide-react";
 
 // --- TypeScript Type Definitions ---
-interface HappyHourItem {
-  item: string;
-  price: string;
-}
-
 interface Restaurant {
   id: string;
   name: string;
@@ -17,14 +12,16 @@ interface Restaurant {
   address: string;
   hours: string;
   happyHour: {
-    food: HappyHourItem[];
-    drinks: HappyHourItem[];
+    times: string;
+    food: { item: string; price: string }[];
+    drinks: { item: string; price: string }[];
   };
 }
 
 interface RestaurantListProps {
   restaurants: Restaurant[];
   selectedLocation: string;
+  searchQuery: string;
 }
 
 // --- Single Restaurant Card Component ---
@@ -93,7 +90,12 @@ const RestaurantCard = ({
                 <Clock size={16} className="mr-2 flex-shrink-0" />{" "}
                 {restaurant.hours}
               </div>
-
+              <div className="flex items-center text-sm bg-blue-50 text-blue-800 p-3 rounded-md mb-4">
+                <Sparkles size={16} className="mr-2 flex-shrink-0" />
+                <span className="font-semibold">
+                  Happy Hour: {restaurant.happyHour.times}
+                </span>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Food Specials */}
                 <div>
@@ -136,14 +138,20 @@ const RestaurantCard = ({
 const RestaurantList = ({
   restaurants,
   selectedLocation,
+  searchQuery, // <-- THE FIX: Added 'searchQuery' here
 }: RestaurantListProps) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const filteredRestaurants = restaurants.filter(
-    (r) =>
+  // This logic will now work correctly without errors
+  const filteredRestaurants = restaurants.filter((r) => {
+    const matchesLocation =
       selectedLocation === "All" ||
-      r.location === selectedLocation.toLowerCase()
-  );
+      r.location === selectedLocation.toLowerCase();
+    const matchesSearch = r.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return matchesLocation && matchesSearch;
+  });
 
   const handleToggle = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
@@ -152,13 +160,13 @@ const RestaurantList = ({
   if (filteredRestaurants.length === 0) {
     return (
       <p className="text-center text-gray-500 py-10">
-        No restaurants found for this location.
+        No restaurants found. Try adjusting your filters.
       </p>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8" id="location">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {filteredRestaurants.map((restaurant) => (
           <RestaurantCard
