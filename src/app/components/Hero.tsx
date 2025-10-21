@@ -3,16 +3,23 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="text-4xl flex items-center justify-center my-6 flex-col">
-        <h1 className="my-4">Welcome to Happy YEG</h1>
-        <Image
-          src="/happyLogo.jpg"
-          alt="Happy YEG Logo"
-          width={400}
-          height={400}
-        />
+      <div className="mx-auto max-w-2xl py-12 sm:py-24 lg:py-20">
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-4">
+            <Image
+              src="/happy-logo.png"
+              alt="Happy YEG Logo"
+              width={400}
+              height={400}
+            />
+          </div>
+          <p className="mt-6 text-lg leading-8 text-gray-600">
+            Your ultimate guide to the best happy hour deals across Edmonton. Go
+            out, have fun, and save money without the hassle.
+          </p>
+        </div>
       </div>
-      <div id="top" className="flex flex-col justify-center px-8">
+      <div id="top" className="flex flex-col justify-center px-8 mt-8">
         <p className="mb-4 ">
           These days, it&apos;s getting harder to spend money going out when
           food prices keep getting higher, but it doesn&apos;t mean you
