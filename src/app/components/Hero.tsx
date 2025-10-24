@@ -3,8 +3,12 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="mx-auto max-w-2xl py-12 sm:py-24 lg:py-20">
-        <div className="text-center">
+      <div
+        className="mx-auto max-w-2xl py-12 sm:py-24 lg:py-20 relative overflow-hidden rounded-lg bg-cover bg-center"
+        style={{ backgroundImage: "url('/bg-main.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
+        <div className="text-center relative z-10">
           <div className="flex items-center justify-center space-x-4">
             <Image
               src="/happy-logo.png"
@@ -13,7 +17,7 @@ const Hero = () => {
               height={400}
             />
           </div>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-gray-200">
             Your ultimate guide to the best happy hour deals across Edmonton. Go
             out, have fun, and save money without the hassle.
           </p>
