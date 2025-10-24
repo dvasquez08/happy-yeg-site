@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link"; // <-- 1. Import Link
 import { useState } from "react";
 import { Search, Menu, X } from "lucide-react";
 
@@ -20,7 +21,6 @@ const SearchBar = ({
   onSearchChange,
   onEnterPress,
 }: SearchBarProps) => {
-  // This function handles the key press event
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -54,7 +54,8 @@ const Nav = ({ searchQuery, onSearchChange }: NavProps) => {
   };
 
   const handleSearchEnter = () => {
-    window.location.href = "#location";
+    // --- 4. Updated link to work from any page ---
+    window.location.href = "/#location";
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
     }
@@ -63,7 +64,8 @@ const Nav = ({ searchQuery, onSearchChange }: NavProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-blue-950/80 backdrop-blur-md border-b border-gray-800">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+        {/* --- 2. Logo is now a link --- */}
+        <Link href="/" className="flex items-center space-x-2">
           <Image
             src="/happy-logo.png"
             alt="Happy YEG Logo"
@@ -71,27 +73,39 @@ const Nav = ({ searchQuery, onSearchChange }: NavProps) => {
             height={32}
           />
           <span className="text-2xl font-bold text-white">HappyYEG</span>
-        </div>
+        </Link>
 
-        {/* Desktop Navigation */}
+        {/* --- 3. Desktop Navigation Updated --- */}
         <nav className="hidden md:flex items-center space-x-6">
           <SearchBar
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
             onEnterPress={handleSearchEnter}
           />
-          <a
-            href="#location"
+          <Link
+            href="/"
+            className="text-white hover:text-blue-400 transition-colors"
+          >
+            Home
+          </Link>
+          <Link
+            href="/#location"
             className="text-white hover:text-blue-400 transition-colors"
           >
             Locations
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            href="/about"
+            className="text-white hover:text-blue-400 transition-colors"
+          >
+            About
+          </Link>
+          <Link
+            href="/contact"
             className="text-white hover:text-blue-400 transition-colors"
           >
             Contact
-          </a>
+          </Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -106,7 +120,7 @@ const Nav = ({ searchQuery, onSearchChange }: NavProps) => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* --- 3. Mobile Menu Updated --- */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-blue-950 border-t border-gray-800">
           <div className="container mx-auto px-6 py-4 space-y-4">
@@ -116,20 +130,34 @@ const Nav = ({ searchQuery, onSearchChange }: NavProps) => {
               onEnterPress={handleSearchEnter}
             />
             <nav className="flex flex-col space-y-2">
-              <a
-                href="#location"
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-blue-400 transition-colors py-2"
+              >
+                Home
+              </Link>
+              <Link
+                href="/#location"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:text-blue-400 transition-colors py-2"
               >
                 Locations
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-blue-400 transition-colors py-2"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:text-blue-400 transition-colors py-2"
               >
                 Contact
-              </a>
+              </Link>
             </nav>
           </div>
         </div>
