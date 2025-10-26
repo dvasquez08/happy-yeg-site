@@ -38,6 +38,7 @@ const Home = () => {
             address: data.address,
             hours: data.businessHours,
             happyHour: data.happyHour,
+            slug: data.slug,
           } as Restaurant;
         });
 
