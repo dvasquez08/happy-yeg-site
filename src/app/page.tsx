@@ -1,210 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, MapPin, Clock, Sparkles } from "lucide-react";
+
+// --- Component Imports ---
 import ButtonGroup from "./components/ButtonGroup";
 import Hero from "./components/Hero";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
-import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
 
-// --- TypeScript Type Definitions ---
-interface Restaurant {
-  id: string;
-  name: string;
-  location: "north" | "south" | "west" | "downtown";
-  address: string;
-  hours: string;
-  happyHour: {
-    times: string;
-    food: { item: string; price: string }[];
-    drinks: { item: string; price: string }[];
-  };
-}
+// --- Firestore Imports ---
+import { collection, getDocs } from "firebase/firestore";
 
-interface RestaurantListProps {
-  restaurants: Restaurant[];
-  selectedLocation: string;
-  searchQuery: string;
-}
+// --- Restaurant List Imports
+import RestaurantList from "./components/RestaurantList";
+import type { Restaurant } from "./components/RestaurantList";
+import { db } from "./lib/firebase";
 
-// --- Single Restaurant Card Component ---
-const RestaurantCard = ({
-  restaurant,
-  isExpanded,
-  onToggle,
-}: {
-  restaurant: Restaurant;
-  isExpanded: boolean;
-  onToggle: () => void;
-}) => {
-  const locationColors = {
-    north: "bg-blue-100 text-blue-800",
-    south: "bg-green-100 text-green-800",
-    west: "bg-yellow-100 text-yellow-800",
-    downtown: "bg-purple-100 text-purple-800",
-  };
-
-  return (
-    <div className="border-b border-gray-200 last:border-b-0">
-      <button
-        onClick={onToggle}
-        className="w-full flex justify-between items-center text-left p-4 hover:bg-gray-50 transition-colors"
-      >
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            {restaurant.name}
-          </h3>
-          <span
-            className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
-              locationColors[restaurant.location]
-            }`}
-          >
-            {restaurant.location.charAt(0).toUpperCase() +
-              restaurant.location.slice(1)}
-          </span>
-        </div>
-        <ChevronDown
-          className={`transform transition-transform duration-300 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
-          size={24}
-        />
-      </button>
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.div
-            key="content"
-            initial="collapsed"
-            animate="open"
-            exit="collapsed"
-            variants={{
-              open: { opacity: 1, height: "auto" },
-              collapsed: { opacity: 0, height: 0 },
-            }}
-            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-6 pt-2">
-              <div className="flex items-center text-sm text-gray-600 mb-2">
-                <MapPin size={16} className="mr-2 flex-shrink-0" />{" "}
-                {restaurant.address}
-              </div>
-              <div className="flex items-center text-sm text-gray-600 mb-4">
-                <Clock size={16} className="mr-2 flex-shrink-0" />{" "}
-                {restaurant.hours}
-              </div>
-              <div className="flex items-center text-sm bg-blue-50 text-blue-800 p-3 rounded-md mb-4">
-                <Sparkles size={16} className="mr-2 flex-shrink-0" />
-                <span className="font-semibold">
-                  Happy Hour: {restaurant.happyHour.times}
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Food Specials */}
-                <div>
-                  <h4 className="font-bold text-gray-700 mb-2 border-b pb-1">
-                    Food Specials
-                  </h4>
-                  <ul className="space-y-1">
-                    {restaurant.happyHour.food.map((item, index) => (
-                      <li key={index} className="flex justify-between text-sm">
-                        <span>{item.item}</span>
-                        <span className="font-semibold">{item.price}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {/* Drink Specials */}
-                <div>
-                  <h4 className="font-bold text-gray-700 mb-2 border-b pb-1">
-                    Drink Specials
-                  </h4>
-                  <ul className="space-y-1">
-                    {restaurant.happyHour.drinks.map((item, index) => (
-                      <li key={index} className="flex justify-between text-sm">
-                        <span>{item.item}</span>
-                        <span className="font-semibold">{item.price}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-// --- Main List Component ---
-const RestaurantList = ({
-  restaurants,
-  selectedLocation,
-  searchQuery,
-}: RestaurantListProps) => {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  // --- THE FIX: Add a safeguard ---
-  // If restaurants is not an array, default to an empty one before filtering.
-  const safeRestaurants = Array.isArray(restaurants) ? restaurants : [];
-
-  const filteredRestaurants = safeRestaurants.filter((r) => {
-    const matchesLocation =
-      selectedLocation === "All" ||
-      r.location === selectedLocation.toLowerCase();
-    const matchesSearch = r.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesLocation && matchesSearch;
-  });
-
-  const handleToggle = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
-  if (filteredRestaurants.length === 0) {
-    return (
-      <p className="text-center text-gray-500 py-10">
-        No restaurants found. Try adjusting your filters.
-      </p>
-    );
-  }
-
-  return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8" id="location">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {filteredRestaurants.map((restaurant) => (
-          <RestaurantCard
-            key={restaurant.id}
-            restaurant={restaurant}
-            isExpanded={expandedId === restaurant.id}
-            onToggle={() => handleToggle(restaurant.id)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// --- Firebase Configuration ---
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
-
-// --- Initialize Firebase ---
-const app =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getFirestore(app);
-
+// --- Home Page Component ---
 const Home = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selectedLocation, setSelectedLocation] = useState("All");
@@ -240,6 +52,7 @@ const Home = () => {
     fetchRestaurants();
   }, []);
 
+  // ----- Render logic for loading or showing the list -----
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -258,6 +71,7 @@ const Home = () => {
     );
   };
 
+  // ----- The main page layout -----
   return (
     <div className="">
       <Nav searchQuery={searchQuery} onSearchChange={setSearchQuery} />

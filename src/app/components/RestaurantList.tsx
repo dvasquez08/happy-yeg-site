@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, MapPin, Clock, Sparkles } from "lucide-react";
 
 // --- TypeScript Type Definitions ---
-interface Restaurant {
+export interface Restaurant {
   id: string;
   name: string;
   location: "north" | "south" | "west" | "downtown";
@@ -138,12 +138,14 @@ const RestaurantCard = ({
 const RestaurantList = ({
   restaurants,
   selectedLocation,
-  searchQuery, // <-- THE FIX: Added 'searchQuery' here
+  searchQuery,
 }: RestaurantListProps) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  // This logic will now work correctly without errors
-  const filteredRestaurants = restaurants.filter((r) => {
+  // If restaurants is not an array, default to an empty one before filtering.
+  const safeRestaurants = Array.isArray(restaurants) ? restaurants : [];
+
+  const filteredRestaurants = safeRestaurants.filter((r) => {
     const matchesLocation =
       selectedLocation === "All" ||
       r.location === selectedLocation.toLowerCase();
