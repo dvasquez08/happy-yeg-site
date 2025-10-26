@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast"; // <-- 1. Import Toaster
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Happy YEG | Say Cheers to Savings",
-  description: "Happy YEG Slogan",
+  title: "Edmonton's Best Happy Hour Deals | Happy YEG",
+  description:
+    "Find the best happy hour deals in Edmonton (YEG). Your ultimate guide to food and drink specials, restaurant locations, and times.",
 };
 
 export default function RootLayout({
