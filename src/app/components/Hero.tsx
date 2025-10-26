@@ -17,10 +17,10 @@ const Hero = () => {
               height={400}
             />
           </div>
-          <p className="mt-6 text-lg leading-8 text-gray-200">
-            Your ultimate guide to the best happy hour deals across Edmonton. Go
-            out, have fun, and save money without the hassle.
-          </p>
+          <h1 className="mt-6 text-2xl font-semibold leading-tight">
+            Your Ultimate Guide to the Best Happy Hour Deals in Edmonton
+          </h1>
+          <p>Go out, have fun, and save money without the hassle.</p>
         </div>
       </div>
       <div id="top" className="flex flex-col justify-center px-8 mt-8">
