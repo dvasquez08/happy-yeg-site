@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "emailjs-com";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "react-hot-toast";
-import { X, Loader2 } from "lucide-react"; // Using lucide-react for consistency
+import { X, Loader2 } from "lucide-react";
 
 type ContactModalProps = {
   isOpen: boolean;
@@ -49,7 +49,6 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     emailjs
       .send(serviceId, templateId, templateParams, publicKey)
       .then(() => {
-        // <-- 1. CHANGED: Removed argument
         toast.success("Success! 🎉 Your message has been sent.");
         setName("");
         setEmail("");
@@ -58,7 +57,6 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         onClose();
       })
       .catch(() => {
-        // <-- 2. CHANGED: Removed argument
         toast.error("Failed to send message. Please try again later.");
       })
       .finally(() => {
@@ -83,7 +81,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
 
           {/* Modal Content */}
           <motion.div
-            className="relative w-full max-w-md p-6 bg-white rounded-2xl shadow-xl"
+            className="relative w-full max-w-lg max-h-[90vh] p-6 bg-white rounded-2xl shadow-xl overflow-y-auto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -101,7 +99,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               Contact Us
             </h2>
             <p className="text-gray-600 mb-6">
-              Have a suggestion or see a deal that needs updating? Let us know!
+              Have a suggestion or see a deal that needs updating? Let me know!
             </p>
 
             {/* Form */}
