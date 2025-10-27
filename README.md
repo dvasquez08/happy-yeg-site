@@ -1,5 +1,7 @@
 ## Happy YEG
 
+![happy-yeg](https://github.com/user-attachments/assets/14ba8bf6-89e3-4657-b196-6f7894275f92)
+
 Welcome to my Happy YEG repository. I will explain how everything all works from what the site does, and how it obtains its information.
 
 ### How the Site is Built
@@ -23,13 +25,23 @@ The site is straight forward. The main page start off with a little intro. Then 
 
 South
 
+![location-1](https://github.com/user-attachments/assets/af6973a4-3dd4-4dcc-8a10-3e01d04d3790)
+
 Downtown
+
+![location-2](https://github.com/user-attachments/assets/033dde3c-3119-45ba-bf9e-7c51b5edca37)
 
 ALL
 
+![location-3](https://github.com/user-attachments/assets/53d500bc-aae9-4e0e-95c7-e3243ac902b7)
+
 When selecting one of the restaurants, you will be taken to a page where you will all of the restaurant details, and their specials. You will see their name, address, business hours, happy hour times, and of course the food and drink specials.
 
+![restaurant](https://github.com/user-attachments/assets/f338ee24-9b36-4057-a241-a713f5c23a24)
+
 There is also a seach bar at the top if you would like to search for a specific restaurant in the city.
+
+![search](https://github.com/user-attachments/assets/1b1f2c03-7c82-4431-946d-335294b41061)
 
 ### How the Site Gets its Data
 
@@ -39,9 +51,13 @@ The first workflow is a fully automated workflow that runs on a schedule, once a
 
 The Google Sheet node is to keep track of which restaurants have been added. The agent uses it to reference it so that it doesn't repeat a location, and it's added at the end to update that list.
 
+![scheduled-posts-screenshot](https://github.com/user-attachments/assets/23399cf8-eaf7-47d7-bf3f-59be15a2a38f)
+
 The second workflow was setup for situations where I find a restaurant myself, and then I add it to the list. First I used a form submission node where I enter the details, n8n would format it, and sendd it to Firestore. Now, although this was still faster than manually entering the data into Firestore, it was still cumbersome. So, I remade it using an AI agent as well. This is where I add a Google Doc, copy and paste the information from the source. Using the Google Doc's URL, the flow extracts that data, sends it to the agent where it then formats the data so that it can be organized into the proper fields, then just the like the last flow, Firebase reads it, and sends it to Firestore, updating the same Google Sheet.
 
 No matter how messy and unorganized the data is, even if it's all scrambled, the Agent will know what to grab, how to organize it, and format it properly in its output.
+
+![data-ingestion-agent](https://github.com/user-attachments/assets/41330b53-76ac-429d-9af4-54d54e6133b8)
 
 ### Check out the site
 
