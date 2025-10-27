@@ -12,7 +12,7 @@ const ButtonGroup = ({
   return (
     <div id="location" className="py-8">
       <div>
-        <h2 className="text-3xl flex items-center justify-center my-4">
+        <h2 className="text-3xl flex items-center justify-center mt-16">
           Select Location
         </h2>
         <p className="flex items-center justify-center my-3 px-8">
