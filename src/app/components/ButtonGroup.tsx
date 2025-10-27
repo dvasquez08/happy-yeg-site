@@ -15,7 +15,7 @@ const ButtonGroup = ({
         <h2 className="text-3xl flex items-center justify-center mt-16">
           Select Location
         </h2>
-        <p className="flex items-center justify-center my-3 px-8">
+        <p className="flex items-center justify-center mb-4 text-xl leading-tight text-gray-800 mt-4">
           Select a location below to find a restaurant in the area of your
           choice.
         </p>
