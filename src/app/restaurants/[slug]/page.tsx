@@ -56,6 +56,15 @@ export async function generateMetadata({
   };
 }
 
+export async function generateStaticParams() {
+  const restaurantsCollection = collection(db, "restaurants");
+  const snapshot = await getDocs(restaurantsCollection);
+
+  return snapshot.docs.map((doc) => ({
+    slug: doc.data().slug,
+  }));
+}
+
 // --- Page Content ---
 export default async function RestaurantPage({
   params,
