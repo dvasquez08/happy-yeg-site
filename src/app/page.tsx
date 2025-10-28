@@ -15,6 +15,7 @@ import { collection, getDocs } from "firebase/firestore";
 import RestaurantList from "./components/RestaurantList";
 import type { Restaurant } from "./components/RestaurantList";
 import { db } from "./lib/firebase";
+import WelcomeContent from "./components/WelcomeContent";
 
 // --- Home Page Component ---
 const Home = () => {
@@ -78,6 +79,7 @@ const Home = () => {
       <Nav searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <main className="pt-20 bg-zinc-50">
         <Hero />
+        <WelcomeContent />
         <ButtonGroup
           selectedLocation={selectedLocation}
           onSelectLocation={setSelectedLocation}
