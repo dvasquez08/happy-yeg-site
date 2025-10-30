@@ -99,13 +99,13 @@ const WelcomeContent = () => {
         </div>
       </div>
 
-      {/* --- Section 3: My Promise --- */}
+      {/* --- Section 3: Updates --- */}
       <div className="border-b border-gray-200">
         <button
           onClick={() => handleToggle("promise")}
           className="w-full flex justify-between items-center py-4"
         >
-          <h2 className="text-3xl font-semibold text-gray-800">My Promise</h2>
+          <h2 className="text-3xl font-semibold text-gray-800">Updates</h2>
           <ChevronDown
             className={`text-blue-700 transition-transform duration-300 ${
               openSection === "promise" ? "rotate-180" : ""
