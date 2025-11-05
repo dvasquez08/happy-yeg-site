@@ -1,82 +1,58 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { getRestaurantBySlug, getRestaurants } from "@/app/lib/firebaseAdmin";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock, MapPin, Sparkles, ArrowLeft } from "lucide-react";
 
-// --- Define the Restaurant type for this page ---
-interface RestaurantData {
-  name: string;
-  location: "north" | "south" | "west" | "downtown";
-  address: string;
-  businessHours: string;
-  happyHour: {
-    times: string;
-    food: { item: string; price: string }[];
-    drinks: { item: string; price: string }[];
-  };
-  slug: string;
-}
-
-// --- Helper function to fetch data ---
-async function getRestaurantsBySlug(
-  slug: string
-): Promise<RestaurantData | null> {
-  const restaurantsCollection = collection(db, "restaurants");
-  const q = query(restaurantsCollection, where("slug", "==", slug));
-  const snapshot = await getDocs(q);
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  const doc = snapshot.docs[0];
-  return doc.data() as RestaurantData;
-}
-
-// --- Generate dynamic SEO Metadata
 export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const restaurant = await getRestaurantsBySlug(params.slug);
+  const restaurant = await getRestaurantBySlug(params.slug);
 
   if (!restaurant) {
     return {
-      title: "Restaurant Not Found",
+      title: "Restaurant Not Found.",
       description: "This restaurant could not be found.",
     };
   }
 
   return {
     title: `${restaurant.name} Happy Hour | Edmonton Deals`,
-    description: `Find ${restaurant.name}'s happy hour times, food specials, and drink deals in ${restaurant.location} Edmonton.`,
+    description: `Find ${restaurant.name}'s happy hour times, food specials and drink deals in ${restaurant.location} Edmonton.`,
   };
 }
 
+// ----- Use the Admin Helper -----
 export async function generateStaticParams() {
-  const restaurantsCollection = collection(db, "restaurants");
-  const snapshot = await getDocs(restaurantsCollection);
+  const restaurants = await getRestaurants();
 
-  return snapshot.docs.map((doc) => ({
-    slug: doc.data().slug,
+  return restaurants.map((restaurant) => ({
+    slug: restaurant.slug,
   }));
 }
 
-// --- Page Content ---
+// ----- Re-validate the page every 1 hour -----
+export const revalidate = 3600;
+
+// ----- Page Content -----
 export default async function RestaurantPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const restaurant = await getRestaurantsBySlug(params.slug);
+  const restaurant = await getRestaurantBySlug(params.slug);
 
-  // If no restaurant, show 404 page
   if (!restaurant) {
     notFound();
   }
+
+  // ----- Check for specials to provide fallback content -----
+  const hasFoodSpecials =
+    restaurant.happyHour?.food && restaurant.happyHour.food.length > 0;
+  const hasDrinkSpecials =
+    restaurant.happyHour?.drinks && restaurant.happyHour.drinks.length > 0;
 
   const locationColors = {
     north: "bg-blue-100 text-blue-800",
@@ -89,7 +65,7 @@ export default async function RestaurantPage({
     <div className="bg-zinc-50 min-h-screen">
       <main className="container mx-auto max-w-3xl p-4 pt-24">
         <Link
-          href="/#location" // Link back to the list section
+          href="/#location"
           className="inline-flex items-center text-blue-700 hover:text-blue-900 transition-colors mb-4"
         >
           <ArrowLeft size={18} className="mr-1" />
@@ -137,12 +113,19 @@ export default async function RestaurantPage({
                   Food Specials
                 </h2>
                 <ul className="space-y-2">
-                  {restaurant.happyHour.food.map((item, index) => (
-                    <li key={index} className="flex justify-between text-base">
-                      <span>{item.item}</span>
-                      <span className="font-semibold">{item.price}</span>
-                    </li>
-                  ))}
+                  {hasFoodSpecials ? (
+                    restaurant.happyHour.food.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex justify-between text-base"
+                      >
+                        <span>{item.item}</span>
+                        <span className="font-semibold">{item.price}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-500">No food specials listed.</li>
+                  )}
                 </ul>
               </div>
               {/* Drink Specials */}
@@ -151,12 +134,19 @@ export default async function RestaurantPage({
                   Drink Specials
                 </h2>
                 <ul className="space-y-2">
-                  {restaurant.happyHour.drinks.map((item, index) => (
-                    <li key={index} className="flex justify-between text-base">
-                      <span>{item.item}</span>
-                      <span className="font-semibold">{item.price}</span>
-                    </li>
-                  ))}
+                  {hasDrinkSpecials ? (
+                    restaurant.happyHour.drinks.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex justify-between text-base"
+                      >
+                        <span>{item.item}</span>
+                        <span className="font-semibold">{item.price}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-500">No drink specials listed.</li>
+                  )}
                 </ul>
               </div>
             </div>
