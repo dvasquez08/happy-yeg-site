@@ -60,7 +60,7 @@ export async function getRestaurantBySlug(
     slug: string
 ): Promise<Restaurant | null> {
     try {
-        const query = adminDb.collection("Restaurants").where("slug", "==", slug).limit(1);
+        const query = adminDb.collection("restaurants").where("slug", "==", slug).limit(1);
         const snapshot = await query.get();
 
         if (snapshot.empty) {
