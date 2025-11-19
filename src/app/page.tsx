@@ -1,7 +1,6 @@
 // --- Component Imports ---
 import Hero from "./components/Hero";
 import WelcomeContent from "./components/WelcomeContent";
-import Footer from "./components/Footer";
 import ClientWrapper from "./components/ClientWrapper";
 
 // --- Server-side Firestore Imports ---
@@ -43,7 +42,6 @@ export default async function Home() {
         <Hero />
         <WelcomeContent />
       </ClientWrapper>
-      <Footer />
     </div>
   );
 }

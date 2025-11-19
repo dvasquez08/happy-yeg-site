@@ -52,9 +52,8 @@ const DisclaimerPageClient = () => {
             agree to its terms.
           </p>
         </main>
+        <Footer />
       </div>
-
-      <Footer />
     </>
   );
 };

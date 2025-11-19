@@ -5,6 +5,7 @@ import type { Restaurant } from "./RestaurantList";
 import Nav from "./Nav";
 import ButtonGroup from "./ButtonGroup";
 import RestaurantList from "./RestaurantList";
+import Footer from "../components/Footer";
 
 interface ClientWrapperProps {
   restaurants: Restaurant[];
@@ -30,6 +31,7 @@ const ClientWrapper = ({ restaurants, children }: ClientWrapperProps) => {
           searchQuery={searchQuery}
         />
       </main>
+      <Footer />
     </>
   );
 };

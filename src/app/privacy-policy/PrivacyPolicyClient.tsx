@@ -127,9 +127,8 @@ const PrivacyPolicyClient = () => {
             posted on this page with an updated revision date.
           </p>
         </main>
+        <Footer />
       </div>
-
-      <Footer />
     </>
   );
 };

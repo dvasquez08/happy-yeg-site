@@ -63,8 +63,8 @@ const AboutPageClient = () => {
             </p>
           </div>
         </main>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };
