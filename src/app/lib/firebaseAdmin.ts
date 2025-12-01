@@ -15,6 +15,72 @@ if (getApps().length === 0) {
 
 export const adminDb = getFirestore();
 
+// --- Blog Post Type ---
+export interface BlogPost {
+    id: string;
+    title: string;
+    slug: string;
+    content: string;
+    imageUrl: string;
+    createdAt: admin.firestore.Timestamp;
+}
+
+// --- Helper function to get all blog posts ---
+export async function getBlogPosts(): Promise<BlogPost[]> {
+    try {
+        const snapshot = await adminDb
+        .collection("blogPosts")
+        .orderBy("createdAt", "desc")
+        .get();
+
+    if (snapshot.empty) return [];
+
+    return snapshot.docs.map((doc) => {
+        const data = doc.data()
+        return {
+            id: doc.id,
+            title: data.title,
+            slug: data.slug,
+            content: data.content,
+            imageUrl: data.imageUrl || null,
+            createdAt: data.createdAt,
+        } as BlogPost;
+    });
+    } catch (error) {
+        console.error("Error fetching blog posts:", error);
+        return [];
+    }
+}
+
+// --- Helper function to get one blog post by slug ---
+export async function getBlogPostBySlug(
+    slug: string
+): Promise<BlogPost | null> {
+    try {
+        const query = adminDb.collection("blogPosts").where("slug", "==", slug).limit(1);
+        const snapshot = await query.get();
+
+        if (snapshot.empty) {
+            return null;
+        }
+
+        const doc = snapshot.docs[0];
+        const data = doc.data();
+
+        return {
+            id: doc.id,
+            title: data.title,
+            slug: data.slug,
+            content: data.content,
+            imageUrl: data.imageUrl || null,
+            createdAt: data.createdAt,
+        } as BlogPost;
+    } catch (error) {
+        console.error(`Error fetching blog post by slug ${slug}:`, error);
+        return null;
+    }
+}
+
 // ----- Shared Type -----
 
 export interface Restaurant {
