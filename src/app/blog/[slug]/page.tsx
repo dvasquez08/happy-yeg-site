@@ -6,7 +6,6 @@ import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 
 import { getBlogPostBySlug, getBlogPosts } from "@/app/lib/firebaseAdmin";
-import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
 
 // --- Generate dynamic SEO Metadata ---
@@ -61,7 +60,6 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <Nav searchQuery="" onSearchChange={() => {}} />
       <main className="bg-zinc-50 pt-20 min-h-screen">
         <div className="container mx-auto max-w-4xl px-6 py-12">
           {/* Back to Blog Button */}
